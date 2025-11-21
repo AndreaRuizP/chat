@@ -1,0 +1,98 @@
+:root {
+    --primary-color: #a6217d;
+    --secondary-color: #f9aee6;
+}
+
+body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.gradient-bar {
+    background: var(--secondary-color);
+    height: 3px;
+}
+
+.post-card {
+    transition: all 0.3s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.chat-item {
+    transition: all 0.2s ease;
+}
+
+.chat-item:hover {
+    background: rgba(168, 85, 247, 0.1);
+}
+
+.Navbar img {
+    width: 160px;
+    height: 160px;
+    border-radius: 8px;
+}
+
+/* Login */
+
+.gradient-bar {
+    background: var(--secondary-color);
+    height: 3px;
+}
+
+.login-container {
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Registro */
+
+.gradient-bar {
+    background: var(--secondary-color);
+    height: 3px;
+}
+
+.register-container {
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.password-strength {
+    height: 4px;
+    background: #374151;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.password-strength-bar {
+    height: 100%;
+    transition: all 0.3s ease;
+    width: 0%;
+}
