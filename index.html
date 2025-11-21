@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Talk</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="/public/icon.png">
     <link rel="stylesheet" href="/style.css">
 </head>
@@ -14,175 +15,366 @@
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-3">
-                    <img class="logo" src="/public/logo.png" alt="ChatRooms Logo" class="w-10 h-10">
+                    <img class="logo" src="/public/logo.png" alt="Talk Logo">
                 </div>
                 <div class="flex items-center gap-4">
-                    <input type="text" placeholder="Buscar..." class="px-4 py-2 bg-gray-800 text-white rounded-full w-64 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <input type="text" placeholder="Buscar..." class="px-4 py-2 bg-gray-800 text-white rounded-full w-64 focus:outline-none focus:ring-2 focus:ring-[#E84DBF]">
                     
                     <!-- Botones para usuarios NO logueados -->
                     <div id="guestButtons" class="flex items-center gap-3">
-                        <a href="/pages/login.html" class="px-6 py-2 bg-transparent border-2 border-[#e84dbf] text-[#e84dbf] font-semibold rounded-full hover:bg-[#e84dbf] hover:text-white transition">
+                        <a href="/pages/login.html" class="px-6 py-2 bg-transparent border-2 border-[#E84DBF] text-[#E84DBF] font-semibold rounded-full hover:bg-[#E84DBF] hover:text-white transition">
                             Iniciar Sesión
                         </a>
-                        <a href="/pages/registro.html" class="px-6 py-2 bg-[#e84dbf] text-white font-semibold rounded-full hover:shadow-lg transition">
+                        <a href="/pages/registro.html" class="px-6 py-2 bg-[#E84DBF] text-white font-semibold rounded-full hover:shadow-lg transition">
                             Registrarse
                         </a>
                     </div>
 
-                    <!-- Botones para usuarios logueados -->
-                    <div id="userButtons" class="hidden flex items-center gap-4">
-                        <span id="userDisplay" class="text-white font-semibold"></span>
-                        <button onclick="logout()" class="px-6 py-2 bg-red-500 text-white font-semibold rounded-full hover:bg-red-600 transition">
-                            Cerrar Sesión
+                    <!-- Menú de usuario -->
+                    <div id="userButtons" class="hidden relative">
+                        <button onclick="toggleUserMenu()" class="flex items-center gap-2 relative">
+                            <i class="fas fa-ellipsis-v text-gray-400 text-xl hover:text-white transition"></i>
+                            <div id="userAvatar" class="w-10 h-10 bg-gradient-to-br from-[#F47ED5] to-[#CC2D9E] rounded-full flex items-center justify-center text-white font-bold">
+                                ?
+                            </div>
                         </button>
+
+                        <!-- Dropdown Menu -->
+                        <div id="userMenu" class="hidden absolute right-0 top-full mt-2 w-48 bg-gray-800 rounded-xl shadow-2xl border border-gray-700 overflow-hidden z-50">
+                            <button onclick="openProfileModal()" class="w-full px-4 py-3 text-left text-white hover:bg-gray-700 transition flex items-center gap-3">
+                                <i class="fas fa-user-circle text-[#E84DBF]"></i>
+                                <span>Mi Perfil</span>
+                            </button>
+                            <div class="border-t border-gray-700"></div>
+                            <button onclick="confirmLogout()" class="w-full px-4 py-3 text-left text-red-400 hover:bg-gray-700 transition flex items-center gap-3">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Cerrar Sesión</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
+
+    <!-- Modal de Perfil -->
+    <div id="profileModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md relative animate-fadeIn border border-gray-800">
+            <div class="bg-gradient-to-r from-[#CC2D9E] to-[#A6217D] rounded-t-2xl p-4 relative">
+                <button onclick="closeProfileModal()" class="absolute top-3 right-3 text-white hover:text-gray-200 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <h2 class="text-xl font-bold text-white">Mi Perfil</h2>
+            </div>
+
+            <div class="p-6">
+                <div class="flex flex-col items-center mb-4">
+                    <div class="relative group">
+                        <div id="profileAvatarDisplay" class="w-20 h-20 bg-gradient-to-br from-[#F47ED5] to-[#CC2D9E] rounded-full flex items-center justify-center text-white font-bold text-2xl cursor-pointer">
+                            <span id="profileAvatar">?</span>
+                        </div>
+                        <label for="avatarInput" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-full opacity-0 group-hover:opacity-100 transition cursor-pointer">
+                            <i class="fas fa-camera text-white text-2xl"></i>
+                        </label>
+                        <input type="file" id="avatarInput" accept="image/*" class="hidden" onchange="handleAvatarChange(event)">
+                    </div>
+                    <p class="text-gray-400 text-xs mt-2">Haz clic para cambiar foto</p>
+                    <h3 id="profileUsername" class="text-lg font-bold text-white mt-2">usuario</h3>
+                    <span class="text-gray-400 text-sm">ID: <span id="profileUserId">0</span></span>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl p-3 mb-3 flex items-center justify-between">
+                    <div class="flex-1">
+                        <h4 class="text-white font-semibold text-sm">Modo Anónimo</h4>
+                        <p class="text-gray-400 text-xs">Oculta tu identidad</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="anonymousMode" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#E84DBF]"></div>
+                    </label>
+                </div>
+
+                <div class="mb-3">
+                    <label class="block text-white font-semibold text-sm mb-1">Biografía</label>
+                    <textarea 
+                        id="profileBio" 
+                        rows="2" 
+                        maxlength="150"
+                        class="w-full px-3 py-2 bg-gray-800 text-white rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#E84DBF] resize-none"
+                        placeholder="Cuéntanos sobre ti..."
+                    ></textarea>
+                    <p class="text-gray-500 text-xs mt-1"><span id="bioCount">0</span>/150</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-white font-semibold text-sm mb-1">Email</label>
+                    <input 
+                        id="profileEmail" 
+                        type="email" 
+                        class="w-full px-3 py-2 bg-gray-800 text-gray-400 rounded-xl text-sm cursor-not-allowed"
+                        disabled
+                    >
+                </div>
+
+                <div class="flex gap-2">
+                    <button 
+                        onclick="closeProfileModal()" 
+                        class="flex-1 py-2.5 bg-gray-800 text-white font-semibold rounded-xl hover:bg-gray-700 transition text-sm"
+                    >
+                        Cancelar
+                    </button>
+                    <button 
+                        onclick="saveProfile()" 
+                        class="flex-1 py-2.5 bg-gradient-to-r from-[#E84DBF] to-[#CC2D9E] text-white font-semibold rounded-xl hover:shadow-lg transition text-sm"
+                    >
+                        Guardar Cambios
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Crear Publicación -->
+    <div id="createPostModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg relative animate-fadeIn border border-gray-800">
+            <div class="bg-gradient-to-r from-[#CC2D9E] to-[#A6217D] rounded-t-2xl p-4 relative">
+                <button onclick="closeCreatePostModal()" class="absolute top-3 right-3 text-white hover:text-gray-200 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <h2 class="text-xl font-bold text-white">¿Qué quieres publicar?</h2>
+            </div>
+
+            <div class="p-6">
+                <textarea 
+                    id="newPostContent" 
+                    rows="4" 
+                    maxlength="500"
+                    class="w-full px-4 py-3 bg-gray-800 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#E84DBF] resize-none"
+                    placeholder="Comparte tus pensamientos..."
+                ></textarea>
+                <p class="text-gray-500 text-xs mt-2"><span id="postCharCount">0</span>/500</p>
+
+                <div class="flex gap-2 mt-4">
+                    <button 
+                        onclick="closeCreatePostModal()" 
+                        class="flex-1 py-2.5 bg-gray-800 text-white font-semibold rounded-xl hover:bg-gray-700 transition"
+                    >
+                        Cancelar
+                    </button>
+                    <button 
+                        onclick="submitNewPost()" 
+                        class="flex-1 py-2.5 bg-gradient-to-r from-[#E84DBF] to-[#CC2D9E] text-white font-semibold rounded-xl hover:shadow-lg transition"
+                    >
+                        Publicar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Editar Publicación -->
+    <div id="editPostModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg relative animate-fadeIn border border-gray-800">
+            <div class="bg-gradient-to-r from-[#CC2D9E] to-[#A6217D] rounded-t-2xl p-4 relative">
+                <button onclick="closeEditPostModal()" class="absolute top-3 right-3 text-white hover:text-gray-200 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <h2 class="text-xl font-bold text-white">Editar publicación</h2>
+            </div>
+
+            <div class="p-6">
+                <textarea 
+                    id="editPostContent" 
+                    rows="4" 
+                    maxlength="500"
+                    class="w-full px-4 py-3 bg-gray-800 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#E84DBF] resize-none"
+                ></textarea>
+                <p class="text-gray-500 text-xs mt-2"><span id="editCharCount">0</span>/500</p>
+
+                <div class="flex gap-2 mt-4">
+                    <button 
+                        onclick="closeEditPostModal()" 
+                        class="flex-1 py-2.5 bg-gray-800 text-white font-semibold rounded-xl hover:bg-gray-700 transition"
+                    >
+                        Cancelar
+                    </button>
+                    <button 
+                        onclick="submitEditPost()" 
+                        class="flex-1 py-2.5 bg-gradient-to-r from-[#E84DBF] to-[#CC2D9E] text-white font-semibold rounded-xl hover:shadow-lg transition"
+                    >
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Crear Sala -->
+    <div id="createRoomModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg relative animate-fadeIn border border-gray-800">
+            <div class="bg-gradient-to-r from-[#CC2D9E] to-[#A6217D] rounded-t-2xl p-4 relative">
+                <button onclick="closeCreateRoomModal()" class="absolute top-3 right-3 text-white hover:text-gray-200 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <h2 class="text-xl font-bold text-white">Crear Nueva Sala</h2>
+            </div>
+
+            <div class="p-6">
+                <div class="mb-4">
+                    <label class="block text-white font-semibold text-sm mb-2">Nombre de la sala *</label>
+                    <input 
+                        type="text" 
+                        id="newRoomName"
+                        maxlength="50"
+                        class="w-full px-4 py-3 bg-gray-800 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#E84DBF]"
+                        placeholder="Ej: Gamers, Música Rock..."
+                    >
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-white font-semibold text-sm mb-2">Descripción</label>
+                    <textarea 
+                        id="newRoomDescription"
+                        rows="2"
+                        maxlength="150"
+                        class="w-full px-4 py-3 bg-gray-800 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#E84DBF] resize-none"
+                        placeholder="¿De qué trata esta sala?"
+                    ></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-white font-semibold text-sm mb-2">Emoji</label>
+                    <div class="grid grid-cols-8 gap-2">
+                        <button type="button" onclick="selectEmoji('💬')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">💬</button>
+                        <button type="button" onclick="selectEmoji('🎮')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">🎮</button>
+                        <button type="button" onclick="selectEmoji('🎵')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">🎵</button>
+                        <button type="button" onclick="selectEmoji('📚')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">📚</button>
+                        <button type="button" onclick="selectEmoji('🎨')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">🎨</button>
+                        <button type="button" onclick="selectEmoji('💻')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">💻</button>
+                        <button type="button" onclick="selectEmoji('🎬')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">🎬</button>
+                        <button type="button" onclick="selectEmoji('⚽')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">⚽</button>
+                        <button type="button" onclick="selectEmoji('🍕')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">🍕</button>
+                        <button type="button" onclick="selectEmoji('✈️')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">✈️</button>
+                        <button type="button" onclick="selectEmoji('📷')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">📷</button>
+                        <button type="button" onclick="selectEmoji('🎤')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">🎤</button>
+                        <button type="button" onclick="selectEmoji('🏋️')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">🏋️</button>
+                        <button type="button" onclick="selectEmoji('🌟')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">🌟</button>
+                        <button type="button" onclick="selectEmoji('🔥')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">🔥</button>
+                        <button type="button" onclick="selectEmoji('💡')" class="emoji-btn w-10 h-10 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-2xl">💡</button>
+                    </div>
+                    <div class="mt-3 flex items-center gap-3">
+                        <span class="text-white text-sm">Seleccionado:</span>
+                        <div class="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center text-3xl">
+                            <span id="selectedEmoji">💬</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6 bg-gray-800 rounded-xl p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-white font-semibold text-sm mb-1">Sala Privada</h4>
+                            <p class="text-gray-400 text-xs">Solo personas invitadas pueden unirse</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="isPrivateRoom" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#E84DBF]"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button 
+                        onclick="closeCreateRoomModal()" 
+                        class="flex-1 py-2.5 bg-gray-800 text-white font-semibold rounded-xl hover:bg-gray-700 transition"
+                    >
+                        Cancelar
+                    </button>
+                    <button 
+                        onclick="submitCreateRoom()" 
+                        class="flex-1 py-2.5 bg-gradient-to-r from-[#E84DBF] to-[#CC2D9E] text-white font-semibold rounded-xl hover:shadow-lg transition"
+                    >
+                        Crear Sala
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-sm relative animate-fadeIn border border-gray-800">
+            <div class="p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div id="confirmIcon" class="w-12 h-12 rounded-full flex items-center justify-center">
+                        <i class="fas fa-question text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 id="confirmTitle" class="text-lg font-bold text-white">¿Estás seguro?</h3>
+                        <p id="confirmMessage" class="text-gray-400 text-sm"></p>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button 
+                        onclick="closeConfirmModal()" 
+                        class="flex-1 py-2.5 bg-gray-800 text-white font-semibold rounded-xl hover:bg-gray-700 transition"
+                    >
+                        Cancelar
+                    </button>
+                    <button 
+                        id="confirmButton"
+                        class="flex-1 py-2.5 bg-gradient-to-r from-[#E84DBF] to-[#CC2D9E] text-white font-semibold rounded-xl hover:shadow-lg transition"
+                    >
+                        Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="hidden fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-4 rounded-xl shadow-2xl border border-gray-700 z-[110] animate-slideUp">
+        <div class="flex items-center gap-3">
+            <i id="toastIcon" class="fas fa-check-circle text-green-400 text-xl"></i>
+            <p id="toastMessage" class="font-semibold"></p>
+        </div>
+    </div>
+
     <div class="max-w-7xl mx-auto px-4 pt-20 pb-8">
         <div class="flex gap-6">
+            <!-- Sidebar de Salas -->
             <aside class="w-80 flex-shrink-0">
                 <div class="bg-gray-900 rounded-2xl shadow-xl p-5 sticky top-24">
                     <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                        </svg>
+                        <i class="fas fa-comments text-[#E84DBF]"></i>
                         Salas de Chat
                     </h2>
                     <div class="gradient-bar mb-4"></div>
                     
-                    <div id="roomsList" class="space-y-2">
-                        <!-- Las salas se cargarán dinámicamente -->
-                    </div>
+                    <div id="roomsList" class="space-y-2"></div>
 
-                    <button onclick="handleCreateRoom()" class="w-full mt-4 py-2 bg-[#cc2d9e] text-white font-semibold rounded-full hover:shadow-lg transition">
+                    <button onclick="handleCreateRoom()" class="w-full mt-4 py-2 bg-[#CC2D9E] text-white font-semibold rounded-full hover:shadow-lg transition">
                         + Crear Sala
                     </button>
                 </div>
             </aside>
 
-            <!-- Feed Central - Publicaciones -->
+            <!-- Feed Central -->
             <main class="flex-1">
                 <!-- Crear Publicación -->
                 <div class="bg-gray-900 rounded-2xl shadow-xl p-5 mb-6">
                     <div class="flex gap-3">
-                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
-                            <span id="userAvatar">?</span>
+                        <div id="userAvatarPost" class="w-12 h-12 bg-gradient-to-br from-[#F47ED5] to-[#CC2D9E] rounded-full flex items-center justify-center text-white font-bold">
+                            ?
                         </div>
-                        <input type="text" id="postInput" placeholder="¿Qué estás pensando?" class="flex-1 px-4 py-3 bg-gray-800 text-white rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer" onclick="handleCreatePost()">
+                        <input type="text" id="postInput" placeholder="¿Qué estás pensando?" class="flex-1 px-4 py-3 bg-gray-800 text-white rounded-full focus:outline-none focus:ring-2 focus:ring-[#E84DBF] cursor-pointer" onclick="handleCreatePost()" readonly>
                     </div>
                 </div>
 
                 <!-- Publicaciones -->
                 <div id="postsContainer" class="space-y-4">
-                    <!-- Post 1 -->
-                    <article class="post-card bg-gray-900 rounded-2xl shadow-xl p-6">
-                        <div class="flex items-start gap-3 mb-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
-                                M
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2">
-                                    <h3 class="text-white font-bold">María López</h3>
-                                    <span class="text-gray-400 text-sm">• hace 2 horas</span>
-                                </div>
-                                <p class="text-purple-400 text-sm">en Cine & Series</p>
-                            </div>
-                        </div>
-                        <p class="text-white text-lg mb-4">Acabo de terminar de ver la última temporada de Stranger Things y WOW... ese final me dejó sin palabras 😱 ¿Alguien más ya la vio?</p>
-                        <div class="flex items-center gap-6 text-gray-400">
-                            <button class="flex items-center gap-2 hover:text-purple-400 transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
-                                </svg>
-                                <span>124</span>
-                            </button>
-                            <button class="flex items-center gap-2 hover:text-purple-400 transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                </svg>
-                                <span>45</span>
-                            </button>
-                            <button class="flex items-center gap-2 hover:text-purple-400 transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </article>
-
-                    <!-- Post 2 -->
-                    <article class="post-card bg-gray-900 rounded-2xl shadow-xl p-6">
-                        <div class="flex items-start gap-3 mb-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold">
-                                J
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2">
-                                    <h3 class="text-white font-bold">Juan Pérez</h3>
-                                    <span class="text-gray-400 text-sm">• hace 5 horas</span>
-                                </div>
-                                <p class="text-purple-400 text-sm">en Estudiantes</p>
-                            </div>
-                        </div>
-                        <p class="text-white text-lg mb-4">¿Alguien tiene tips para estudiar para finales? Estoy súper estresado y no sé por dónde empezar 📚😅</p>
-                        <div class="flex items-center gap-6 text-gray-400">
-                            <button class="flex items-center gap-2 hover:text-purple-400 transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
-                                </svg>
-                                <span>87</span>
-                            </button>
-                            <button class="flex items-center gap-2 hover:text-purple-400 transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                </svg>
-                                <span>32</span>
-                            </button>
-                            <button class="flex items-center gap-2 hover:text-purple-400 transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </article>
-
-                    <!-- Post 3 -->
-                    <article class="post-card bg-gray-900 rounded-2xl shadow-xl p-6">
-                        <div class="flex items-start gap-3 mb-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold">
-                                A
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2">
-                                    <h3 class="text-white font-bold">Ana García</h3>
-                                    <span class="text-gray-400 text-sm">• hace 1 día</span>
-                                </div>
-                                <p class="text-purple-400 text-sm">en Arte & Diseño</p>
-                            </div>
-                        </div>
-                        <p class="text-white text-lg mb-4">Terminé mi primer proyecto de ilustración digital! 🎨✨ Me tomó semanas pero estoy super orgullosa del resultado</p>
-                        <div class="flex items-center gap-6 text-gray-400">
-                            <button class="flex items-center gap-2 hover:text-purple-400 transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
-                                </svg>
-                                <span>256</span>
-                            </button>
-                            <button class="flex items-center gap-2 hover:text-purple-400 transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                </svg>
-                                <span>68</span>
-                            </button>
-                            <button class="flex items-center gap-2 hover:text-purple-400 transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </article>
+                    <p class="text-gray-400 text-center py-8">Cargando publicaciones...</p>
                 </div>
             </main>
         </div>
@@ -191,20 +383,20 @@
     <script>
         const API_URL = 'http://localhost:8000';
         let currentUser = null;
+        let selectedAvatar = null;
+        let editingPostId = null;
+        let editingCommentId = null;
+        let editingCommentPostId = null;
+        let confirmCallback = null;
+        let selectedRoomEmoji = '💬';
 
-        // Verificar autenticación al cargar la página
         async function checkAuth() {
             const token = localStorage.getItem('token');
-            const username = localStorage.getItem('username');
-
-            if (token && username) {
+            if (token) {
                 try {
                     const response = await fetch(`${API_URL}/users/me`, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
-
                     if (response.ok) {
                         currentUser = await response.json();
                         showUserInterface();
@@ -212,7 +404,6 @@
                         showGuestInterface();
                     }
                 } catch (error) {
-                    console.error('Error verificando autenticación:', error);
                     showGuestInterface();
                 }
             } else {
@@ -223,40 +414,142 @@
         function showUserInterface() {
             document.getElementById('guestButtons').classList.add('hidden');
             document.getElementById('userButtons').classList.remove('hidden');
-            document.getElementById('userDisplay').textContent = `@${currentUser.username}`;
-            document.getElementById('userAvatar').textContent = currentUser.username.charAt(0).toUpperCase();
-            document.getElementById('postInput').placeholder = '¿Qué estás pensando?';
+            const avatar = currentUser.avatar || currentUser.username.charAt(0).toUpperCase();
+            document.getElementById('userAvatar').textContent = avatar;
+            document.getElementById('userAvatarPost').textContent = avatar;
         }
 
         function showGuestInterface() {
             document.getElementById('guestButtons').classList.remove('hidden');
             document.getElementById('userButtons').classList.add('hidden');
-            document.getElementById('userAvatar').textContent = '?';
-            document.getElementById('postInput').placeholder = 'Inicia sesión para publicar';
         }
 
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('username');
-            currentUser = null;
-            showGuestInterface();
-            location.reload();
+        function toggleUserMenu() {
+            document.getElementById('userMenu').classList.toggle('hidden');
         }
 
-        function handleCreatePost() {
+        document.addEventListener('click', function(e) {
+            const userButtons = document.getElementById('userButtons');
+            const userMenu = document.getElementById('userMenu');
+            if (userButtons && !userButtons.contains(e.target)) {
+                userMenu?.classList.add('hidden');
+            }
+        });
+
+        function confirmLogout() {
+            showConfirmModal('¿Cerrar sesión?', 'Podrás volver a ingresar cuando quieras', 'logout', () => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                currentUser = null;
+                window.location.reload();
+            });
+        }
+
+        function openProfileModal() {
             if (!currentUser) {
-                alert('Debes iniciar sesión para publicar');
-                window.location.href = 'login.html';
-            } else {
-                // Aquí puedes abrir un modal o redirigir a una página de creación de post
-                const content = prompt('¿Qué quieres publicar?');
-                if (content) {
-                    createPost(content, 1); // Por defecto en la sala 1
+                window.location.href = '/pages/login.html';
+                return;
+            }
+            document.getElementById('profileAvatar').textContent = currentUser.avatar || currentUser.username.charAt(0).toUpperCase();
+            document.getElementById('profileUsername').textContent = currentUser.username;
+            document.getElementById('profileUserId').textContent = currentUser.id;
+            document.getElementById('profileEmail').value = currentUser.email;
+            document.getElementById('profileBio').value = currentUser.full_name || '';
+            updateBioCount();
+            document.getElementById('profileModal').classList.remove('hidden');
+            document.getElementById('userMenu')?.classList.add('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            selectedAvatar = null;
+        }
+
+        function handleAvatarChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('La imagen no puede superar 5MB', 'error');
+                    return;
                 }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedAvatar = e.target.result;
+                    document.getElementById('profileAvatarDisplay').style.backgroundImage = `url(${e.target.result})`;
+                    document.getElementById('profileAvatarDisplay').style.backgroundSize = 'cover';
+                    document.getElementById('profileAvatar').textContent = '';
+                };
+                reader.readAsDataURL(file);
             }
         }
 
-        async function createPost(content, roomId) {
+        function updateBioCount() {
+            const bio = document.getElementById('profileBio').value;
+            document.getElementById('bioCount').textContent = bio.length;
+        }
+
+        document.getElementById('profileBio').addEventListener('input', updateBioCount);
+
+        async function saveProfile() {
+            const bio = document.getElementById('profileBio').value;
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(`${API_URL}/users/me/update`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        full_name: bio,
+                        avatar: selectedAvatar || currentUser.avatar
+                    })
+                });
+                if (response.ok) {
+                    currentUser = await response.json();
+                    showToast('Perfil actualizado correctamente', 'success');
+                    closeProfileModal();
+                    location.reload();
+                } else {
+                    showToast('Error al actualizar el perfil', 'error');
+                }
+            } catch (error) {
+                showToast('Error de conexión', 'error');
+            }
+        }
+
+        document.getElementById('profileModal').addEventListener('click', function(e) {
+            if (e.target === this) closeProfileModal();
+        });
+
+        function handleCreatePost() {
+            if (!currentUser) {
+                window.location.href = '/pages/login.html';
+                return;
+            }
+            document.getElementById('newPostContent').value = '';
+            document.getElementById('postCharCount').textContent = '0';
+            document.getElementById('createPostModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCreatePostModal() {
+            document.getElementById('createPostModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('newPostContent').addEventListener('input', function() {
+            document.getElementById('postCharCount').textContent = this.value.length;
+        });
+
+        async function submitNewPost() {
+            const content = document.getElementById('newPostContent').value.trim();
+            if (!content) {
+                showToast('Escribe algo antes de publicar', 'error');
+                return;
+            }
             const token = localStorage.getItem('token');
             try {
                 const response = await fetch(`${API_URL}/posts`, {
@@ -265,84 +558,387 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ content, room_id: roomId })
+                    body: JSON.stringify({ content, room_id: 1 })
                 });
-
                 if (response.ok) {
-                    alert('Publicación creada exitosamente');
+                    showToast('Publicación creada exitosamente', 'success');
+                    closeCreatePostModal();
                     loadPosts();
                 } else {
-                    alert('Error al crear la publicación');
+                    showToast('Error al crear publicación', 'error');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('Error de conexión');
+                showToast('Error de conexión', 'error');
             }
         }
+
+        document.getElementById('createPostModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCreatePostModal();
+        });
+
+        function openEditPostModal(postId, currentContent) {
+            editingPostId = postId;
+            document.getElementById('editPostContent').value = currentContent;
+            document.getElementById('editCharCount').textContent = currentContent.length;
+            document.getElementById('editPostModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEditPostModal() {
+            document.getElementById('editPostModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            editingPostId = null;
+        }
+
+        document.getElementById('editPostContent').addEventListener('input', function() {
+            document.getElementById('editCharCount').textContent = this.value.length;
+        });
+
+        async function submitEditPost() {
+            const content = document.getElementById('editPostContent').value.trim();
+            if (!content) {
+                showToast('La publicación no puede estar vacía', 'error');
+                return;
+            }
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(`${API_URL}/posts/${editingPostId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ content })
+                });
+                if (response.ok) {
+                    showToast('Publicación actualizada', 'success');
+                    closeEditPostModal();
+                    loadPosts();
+                } else {
+                    showToast('Error al actualizar', 'error');
+                }
+            } catch (error) {
+                showToast('Error de conexión', 'error');
+            }
+        }
+
+        document.getElementById('editPostModal').addEventListener('click', function(e) {
+            if (e.target === this) closeEditPostModal();
+        });
 
         function handleCreateRoom() {
             if (!currentUser) {
-                alert('Debes iniciar sesión para crear una sala');
                 window.location.href = '/pages/login.html';
-            } else {
-                alert('Funcionalidad de crear sala próximamente');
+                return;
+            }
+            document.getElementById('newRoomName').value = '';
+            document.getElementById('newRoomDescription').value = '';
+            document.getElementById('isPrivateRoom').checked = false;
+            selectedRoomEmoji = '💬';
+            document.getElementById('selectedEmoji').textContent = '💬';
+            document.querySelectorAll('.emoji-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-[#E84DBF]');
+            });
+            document.getElementById('createRoomModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCreateRoomModal() {
+            document.getElementById('createRoomModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function selectEmoji(emoji) {
+            selectedRoomEmoji = emoji;
+            document.getElementById('selectedEmoji').textContent = emoji;
+            document.querySelectorAll('.emoji-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-[#E84DBF]');
+            });
+            event.target.classList.add('ring-2', 'ring-[#E84DBF]');
+        }
+
+        async function submitCreateRoom() {
+            const name = document.getElementById('newRoomName').value.trim();
+            const description = document.getElementById('newRoomDescription').value.trim();
+            const isPrivate = document.getElementById('isPrivateRoom').checked;
+            if (!name) {
+                showToast('El nombre de la sala es obligatorio', 'error');
+                return;
+            }
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(`${API_URL}/rooms`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        description: description || null,
+                        emoji: selectedRoomEmoji,
+                        is_private: isPrivate
+                    })
+                });
+                if (response.ok) {
+                    const newRoom = await response.json();
+                    showToast('✅ Sala creada exitosamente', 'success');
+                    closeCreateRoomModal();
+                    loadRooms();
+                    setTimeout(() => {
+                        window.location.href = `/chat-room.html?room=${newRoom.id}`;
+                    }, 1000);
+                } else {
+                    const error = await response.json();
+                    showToast(error.detail || 'Error al crear la sala', 'error');
+                }
+            } catch (error) {
+                showToast('Error de conexión', 'error');
             }
         }
 
-        // Cargar salas de chat
+        document.getElementById('createRoomModal')?.addEventListener('click', function(e) {
+            if (e.target === this) closeCreateRoomModal();
+        });
+
+        function showConfirmModal(title, message, type, callback) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            const icon = document.getElementById('confirmIcon');
+            const btn = document.getElementById('confirmButton');
+            if (type === 'delete') {
+                icon.innerHTML = '<i class="fas fa-trash text-2xl text-red-400"></i>';
+                icon.className = 'w-12 h-12 rounded-full flex items-center justify-center bg-red-900 bg-opacity-30';
+                btn.className = 'flex-1 py-2.5 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition';
+                btn.textContent = 'Eliminar';
+            } else if (type === 'logout') {
+                icon.innerHTML = '<i class="fas fa-sign-out-alt text-2xl text-yellow-400"></i>';
+                icon.className = 'w-12 h-12 rounded-full flex items-center justify-center bg-yellow-900 bg-opacity-30';
+                btn.className = 'flex-1 py-2.5 bg-gradient-to-r from-[#E84DBF] to-[#CC2D9E] text-white font-semibold rounded-xl hover:shadow-lg transition';
+                btn.textContent = 'Sí, salir';
+            } else {
+                icon.innerHTML = '<i class="fas fa-question text-2xl text-[#E84DBF]"></i>';
+                icon.className = 'w-12 h-12 rounded-full flex items-center justify-center bg-gray-800';
+                btn.className = 'flex-1 py-2.5 bg-gradient-to-r from-[#E84DBF] to-[#CC2D9E] text-white font-semibold rounded-xl hover:shadow-lg transition';
+                btn.textContent = 'Aceptar';
+            }
+            confirmCallback = callback;
+            document.getElementById('confirmModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            confirmCallback = null;
+        }
+
+        document.getElementById('confirmButton').addEventListener('click', function() {
+            if (confirmCallback) confirmCallback();
+            closeConfirmModal();
+        });
+
+        document.getElementById('confirmModal').addEventListener('click', function(e) {
+            if (e.target === this) closeConfirmModal();
+        });
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+            msg.textContent = message;
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle text-green-400 text-xl';
+            } else if (type === 'error') {
+                icon.className = 'fas fa-exclamation-circle text-red-400 text-xl';
+            } else if (type === 'info') {
+                icon.className = 'fas fa-info-circle text-blue-400 text-xl';
+            }
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        function togglePostMenu(postId) {
+            const menu = document.getElementById(`postMenu-${postId}`);
+            document.querySelectorAll('[id^="postMenu-"]').forEach(m => {
+                if (m.id !== `postMenu-${postId}`) m.classList.add('hidden');
+            });
+            menu.classList.toggle('hidden');
+        }
+
+        function editPost(postId, currentContent) {
+            openEditPostModal(postId, currentContent);
+            document.getElementById(`postMenu-${postId}`).classList.add('hidden');
+        }
+
+        function deletePost(postId) {
+            showConfirmModal('¿Eliminar publicación?', 'Esta acción no se puede deshacer', 'delete', async () => {
+                const token = localStorage.getItem('token');
+                try {
+                    const response = await fetch(`${API_URL}/posts/${postId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (response.ok) {
+                        showToast('Publicación eliminada', 'success');
+                        loadPosts();
+                    } else {
+                        showToast('Error al eliminar', 'error');
+                    }
+                } catch (error) {
+                    showToast('Error de conexión', 'error');
+                }
+            });
+        }
+
+        function hidePost(postId) {
+            document.querySelector(`[data-post-id="${postId}"]`).style.display = 'none';
+            showToast('Publicación ocultada', 'info');
+        }
+
+        async function toggleLike(postId) {
+            if (!currentUser) {
+                window.location.href = '/pages/login.html';
+                return;
+            }
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(`${API_URL}/posts/${postId}/like`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) loadPosts();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
         async function loadRooms() {
             try {
                 const response = await fetch(`${API_URL}/rooms`);
                 const rooms = await response.json();
-                
-                const roomsList = document.getElementById('roomsList');
-                roomsList.innerHTML = rooms.map(room => `
+                document.getElementById('roomsList').innerHTML = rooms.map(room => `
                     <div class="chat-item p-3 rounded-xl cursor-pointer" onclick="handleRoomClick(${room.id})">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">${room.emoji}</span>
-                                <div>
-                                    <p class="text-white font-semibold">${room.name}</p>
-                                    <p class="text-gray-400 text-sm">${room.members} miembros</p>
-                                </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">${room.emoji}</span>
+                            <div>
+                                <p class="text-white font-semibold">${room.name}</p>
+                                <p class="text-gray-400 text-sm">${room.members} miembros</p>
                             </div>
                         </div>
                     </div>
                 `).join('');
             } catch (error) {
-                console.error('Error cargando salas:', error);
+                console.error('Error:', error);
             }
         }
 
         function handleRoomClick(roomId) {
             if (!currentUser) {
-                alert('Inicia sesión para unirte a esta sala');
                 window.location.href = '/pages/login.html';
             } else {
-                window.location.href = `chat-room.html?room=${roomId}`;
+                window.location.href = `/chat-room.html?room=${roomId}`;
             }
         }
 
-        // Cargar publicaciones
         async function loadPosts() {
             try {
                 const response = await fetch(`${API_URL}/posts`);
                 if (response.ok) {
                     const posts = await response.json();
-                    // Aquí puedes actualizar el feed con las publicaciones reales
-                    console.log('Publicaciones cargadas:', posts);
+                    if (posts.length === 0) {
+                        document.getElementById('postsContainer').innerHTML = '<p class="text-gray-400 text-center py-8">No hay publicaciones aún</p>';
+                    } else {
+                        document.getElementById('postsContainer').innerHTML = posts.map(post => {
+                            const isOwner = currentUser && post.user_id === currentUser.id;
+                            return `
+                            <article class="post-card bg-gray-900 rounded-2xl shadow-xl p-6 relative" data-post-id="${post.id}">
+                                <div class="absolute top-4 right-4">
+                                    <button onclick="togglePostMenu(${post.id})" class="text-gray-400 hover:text-white transition">
+                                        <i class="fas fa-ellipsis-v text-xl"></i>
+                                    </button>
+                                    <div id="postMenu-${post.id}" class="hidden absolute right-0 top-full mt-2 w-40 bg-gray-800 rounded-xl shadow-2xl border border-gray-700 overflow-hidden z-10">
+                                        ${isOwner ? `
+                                            <button onclick="editPost(${post.id}, \`${post.content.replace(/`/g, '\\`').replace(/\n/g, '\\n')}\`)" class="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition flex items-center gap-2">
+                                                <i class="fas fa-edit text-blue-400"></i>
+                                                <span>Editar</span>
+                                            </button>
+                                            <button onclick="deletePost(${post.id})" class="w-full px-4 py-2 text-left text-red-400 hover:bg-gray-700 transition flex items-center gap-2">
+                                                <i class="fas fa-trash"></i>
+                                                <span>Eliminar</span>
+                                            </button>
+                                        ` : `
+                                            <button onclick="hidePost(${post.id})" class="w-full px-4 py-2 text-left text-white hover:bg-gray-700 transition flex items-center gap-2">
+                                                <i class="fas fa-eye-slash text-gray-400"></i>
+                                                <span>Ocultar</span>
+                                            </button>
+                                        `}
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3 mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-[#F47ED5] to-[#CC2D9E] rounded-full flex items-center justify-center text-white font-bold">
+                                        ${post.user_avatar}
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <h3 class="text-white font-bold">${post.username}</h3>
+                                            <span class="text-gray-400 text-sm">• hace poco</span>
+                                        </div>
+                                        <p class="text-[#E84DBF] text-sm">en ${post.room_name}</p>
+                                    </div>
+                                </div>
+                                <p class="text-white text-lg mb-4 pr-8">${post.content}</p>
+                                <div class="flex items-center gap-6 text-gray-400">
+                                    <button onclick="toggleLike(${post.id})" class="flex items-center gap-2 hover:text-[#E84DBF] transition">
+                                        <i class="far fa-heart"></i>
+                                        <span>${post.likes}</span>
+                                    </button>
+                                    <button class="flex items-center gap-2 hover:text-[#E84DBF] transition">
+                                        <i class="far fa-comment"></i>
+                                        <span>${post.comments}</span>
+                                    </button>
+                                    <button class="flex items-center gap-2 hover:text-[#E84DBF] transition">
+                                        <i class="far fa-share-square"></i>
+                                    </button>
+                                </div>
+                            </article>
+                        `}).join('');
+                    }
                 }
             } catch (error) {
-                console.error('Error cargando publicaciones:', error);
+                console.error('Error:', error);
             }
         }
 
-        // Inicializar
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('[id^="postMenu-"]') && !e.target.closest('button')) {
+                document.querySelectorAll('[id^="postMenu-"]').forEach(m => m.classList.add('hidden'));
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             checkAuth();
             loadRooms();
             loadPosts();
         });
     </script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn { animation: fadeIn 0.2s ease-out; }
+        .animate-slideUp { animation: slideUp 0.3s ease-out; }
+        .emoji-btn.ring-2 {
+            box-shadow: 0 0 0 2px #E84DBF;
+        }
+    </style>
 </body>
 </html>

@@ -4,7 +4,15 @@ npm install express ws sqlite3
 pip install fastapi uvicorn
 
 Para iniciar el servidor Websocket
-node server.js
+# Ejecutar en desarrollo
+npm run dev
+# Ejecutar en producción
+npm start
 
 Para iniciar el FastApi
-uvicorn app:app --reload --port 8000
+# Instalar dependencias
+pip install -r requirements.txt
+# Ejecutar servidor
+python run.py
+# O directamente con uvicorn:
+uvicorn main:app --reload --host 0.0.0.0 --port 8000

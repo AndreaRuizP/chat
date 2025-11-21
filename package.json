@@ -1,5 +1,31 @@
 {
   "dependencies": {
-    "@vercel/speed-insights": "^1.2.0"
-  }
+    "@vercel/speed-insights": "^1.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "fastapi": "^0.0.8",
+    "sqlite3": "^5.1.7",
+    "uvicorn": "^0.0.1-security",
+    "ws": "^8.18.3"
+  },
+  "name": "chat",
+  "version": "1.0.0",
+  "description": "Instalar dependencias\r npm init -y\r npm install express ws sqlite3\r pip install fastapi uvicorn",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndreaRuizP/chat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AndreaRuizP/chat/issues"
+  },
+  "homepage": "https://github.com/AndreaRuizP/chat#readme"
 }

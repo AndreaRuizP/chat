@@ -1,98 +1,388 @@
 :root {
-    --primary-color: #a6217d;
-    --secondary-color: #f9aee6;
+    --color-50: #FFF4FD;
+    --color-100: #FEE9FB;
+    --color-200: #FCD2F3;
+    --color-300: #F9AEE6;
+    --color-400: #F47ED5;
+    --color-500: #E84DBF;
+    --color-600: #CC2D9E;
+    --color-700: #A6217D;
+    --color-800: #8A1E67;
+    --color-900: #711E54;
+    --color-950: #4B0734;
+    
+    --bg-dark: #1a1a2e;
+    --bg-darker: #16213e;
+    --bg-darkest: #0f0f1e;
+    --text-primary: #ffffff;
+    --text-secondary: #b4b4b4;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
     min-height: 100vh;
-    font-family: system-ui, -apple-system, sans-serif;
+    color: var(--text-primary);
+}
+
+/* Navbar */
+.Navbar {
+    background: #111827;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #374151;
+}
+
+.logo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .gradient-bar {
-    background: var(--secondary-color);
     height: 3px;
+    background: linear-gradient(90deg, 
+        var(--color-400) 0%, 
+        var(--color-500) 25%, 
+        var(--color-600) 50%, 
+        var(--color-700) 75%, 
+        var(--color-800) 100%
+    );
+    border-radius: 10px;
 }
 
+/* Publicaciones */ 
+
 .post-card {
+    background: #111827;
+    border: 1px solid #374151;
     transition: all 0.3s ease;
 }
 
 .post-card:hover {
+    border-color: var(--color-600);
+    box-shadow: 0 4px 15px rgba(232, 77, 191, 0.2);
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
+/* ==================== SIDEBAR Y SALAS (OSCURO) ==================== */
 .chat-item {
-    transition: all 0.2s ease;
+    background: rgba(26, 26, 46, 0.5);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
 }
 
 .chat-item:hover {
-    background: rgba(168, 85, 247, 0.1);
+    background: rgba(232, 77, 191, 0.1);
+    border-color: var(--color-700);
+    transform: translateX(5px);
 }
 
-.Navbar img {
-    width: 160px;
-    height: 160px;
-    border-radius: 8px;
+.chat-item.active {
+    background: linear-gradient(135deg, var(--color-800) 0%, var(--color-900) 100%);
+    border-color: var(--color-600);
 }
 
-/* Login */
-
-.gradient-bar {
-    background: var(--secondary-color);
-    height: 3px;
-}
-
-.login-container {
-    animation: fadeInUp 0.6s ease;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Registro */
-
-.gradient-bar {
-    background: var(--secondary-color);
-    height: 3px;
-}
-
-.register-container {
-    animation: fadeInUp 0.6s ease;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.password-strength {
-    height: 4px;
-    background: #374151;
-    border-radius: 2px;
-    overflow: hidden;
-    margin-top: 8px;
-}
-
-.password-strength-bar {
-    height: 100%;
+/* ==================== INPUTS ==================== */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+    background: #1f2937;
+    border: 1px solid #374151;
+    color: var(--text-primary);
     transition: all 0.3s ease;
-    width: 0%;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+    border-color: var(--color-500);
+    box-shadow: 0 0 0 3px rgba(232, 77, 191, 0.1);
+    outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #6b7280;
+}
+
+/* ==================== BOTONES ==================== */
+button,
+.btn {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-500) 0%, var(--color-600) 100%);
+    color: white;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 4px 15px rgba(232, 77, 191, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--color-400) 0%, var(--color-500) 100%);
+    box-shadow: 0 6px 25px rgba(232, 77, 191, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #374151;
+    color: white;
+    border: 1px solid #4b5563;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+    border-color: #6b7280;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--color-500);
+    color: var(--color-500);
+}
+
+.btn-outline:hover {
+    background: var(--color-500);
+    color: white;
+}
+
+/* ==================== LINKS ==================== */
+a {
+    color: var(--color-400);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--color-300);
+}
+
+/* ==================== SCROLLBAR PERSONALIZADO ==================== */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--color-700) 0%, var(--color-800) 100%);
+    border-radius: 6px;
+    border: 2px solid #1f2937;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--color-600) 0%, var(--color-700) 100%);
+}
+
+/* ==================== AVATARES ==================== */
+.avatar {
+    background: linear-gradient(135deg, var(--color-500) 0%, var(--color-700) 100%);
+    border: 2px solid var(--color-600);
+    box-shadow: 0 4px 15px rgba(232, 77, 191, 0.3);
+}
+
+.avatar:hover {
+    box-shadow: 0 6px 20px rgba(232, 77, 191, 0.5);
+    transform: scale(1.05);
+}
+
+/* ==================== MODALES ==================== */
+.modal-overlay {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    background: #111827;
+    border: 1px solid #374151;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* ==================== NOTIFICACIONES ==================== */
+.notification {
+    background: #1f2937;
+    border-left: 4px solid var(--color-500);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ==================== TOGGLE SWITCH ==================== */
+input[type="checkbox"]:checked + div {
+    background: linear-gradient(135deg, var(--color-500) 0%, var(--color-600) 100%);
+}
+
+/* ==================== ANIMACIONES ==================== */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-slideIn {
+    animation: slideIn 0.3s ease-out;
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ==================== EFECTOS DE HOVER ==================== */
+.hover-scale {
+    transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 20px rgba(232, 77, 191, 0.5);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .Navbar {
+        padding: 0 1rem;
+    }
+    
+    .post-card {
+        padding: 1rem;
+    }
+    
+    .modal-content {
+        margin: 1rem;
+        max-width: calc(100% - 2rem);
+    }
+}
+
+/* ==================== ESTADOS DE CARGA ==================== */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(232, 77, 191, 0.2), 
+        transparent
+    );
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* ==================== CLASES UTILITARIAS ==================== */
+.text-primary { color: var(--color-500) !important; }
+.text-secondary { color: var(--color-400) !important; }
+.bg-primary { background: var(--color-500) !important; }
+.bg-secondary { background: var(--color-600) !important; }
+.border-primary { border-color: var(--color-500) !important; }
+
+/* ==================== SOMBRAS PERSONALIZADAS ==================== */
+.shadow-pink {
+    box-shadow: 0 10px 30px rgba(232, 77, 191, 0.3);
+}
+
+.shadow-pink-lg {
+    box-shadow: 0 20px 50px rgba(232, 77, 191, 0.4);
+}
+
+/* ==================== EFECTOS DE TEXTO ==================== */
+.text-gradient {
+    background: linear-gradient(135deg, var(--color-300) 0%, var(--color-500) 50%, var(--color-700) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ==================== DIVISORES ==================== */
+.divider {
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--color-700) 50%, 
+        transparent 100%
+    );
+}
+
+/* ==================== CONTENEDOR DE PUBLICACIONES ==================== */
+.posts-container {
+    background: transparent;
+}
+
+/* ==================== SIDEBAR OSCURO ==================== */
+aside {
+    background: transparent;
+}
+
+aside > div {
+    background: #111827;
+    border: 1px solid #374151;
+}
+
+/* ==================== INPUT DE CREAR PUBLICACIÓN (OSCURO) ==================== */
+#postInput {
+    background: #1f2937;
+    border: 1px solid #374151;
+}
+
+#postInput:focus {
+    border-color: var(--color-500);
+    box-shadow: 0 0 0 3px rgba(232, 77, 191, 0.1);
+}
+
+/* ==================== HEADER DEL MODAL DE PERFIL (CON GRADIENTE ROSADO) ==================== */
+.modal-header-gradient {
+    background: linear-gradient(135deg, var(--color-600) 0%, var(--color-700) 100%);
 }
