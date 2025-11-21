@@ -1,11 +1,31 @@
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, Boolean, ForeignKey, Table
+from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, Boolean, ForeignKey, Table, event
+from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from datetime import datetime
 
 DATABASE_URL = "sqlite:///./talk.db"
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+# Configuración mejorada del engine para evitar "database is locked"
+engine = create_engine(
+    DATABASE_URL, 
+    connect_args={
+        "check_same_thread": False,
+        "timeout": 30  # Espera hasta 30 segundos antes de lanzar error
+    },
+    pool_pre_ping=True,  # Verifica conexiones antes de usarlas
+    pool_recycle=3600    # Recicla conexiones cada hora
+)
+
+# Habilitar WAL mode para mejor concurrencia
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_conn, connection_record):
+    cursor = dbapi_conn.cursor()
+    cursor.execute("PRAGMA journal_mode=WAL")
+    cursor.execute("PRAGMA synchronous=NORMAL")
+    cursor.execute("PRAGMA busy_timeout=30000")  # 30 segundos en milisegundos
+    cursor.close()
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
