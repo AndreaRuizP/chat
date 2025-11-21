@@ -71,7 +71,8 @@ body {
     transform: translateY(-2px);
 }
 
-/* ==================== SIDEBAR Y SALAS (OSCURO) ==================== */
+/* Slidder */
+
 .chat-item {
     background: rgba(26, 26, 46, 0.5);
     border: 1px solid transparent;
@@ -89,7 +90,8 @@ body {
     border-color: var(--color-600);
 }
 
-/* ==================== INPUTS ==================== */
+/* input */
+
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -114,7 +116,8 @@ textarea::placeholder {
     color: #6b7280;
 }
 
-/* ==================== BOTONES ==================== */
+/* Botones */
+
 button,
 .btn {
     transition: all 0.3s ease;
@@ -157,7 +160,8 @@ button,
     color: white;
 }
 
-/* ==================== LINKS ==================== */
+/* Enlaces */
+
 a {
     color: var(--color-400);
     text-decoration: none;
@@ -168,7 +172,8 @@ a:hover {
     color: var(--color-300);
 }
 
-/* ==================== SCROLLBAR PERSONALIZADO ==================== */
+/* Scrolbar personalizado */ 
+
 ::-webkit-scrollbar {
     width: 12px;
 }
@@ -187,7 +192,8 @@ a:hover {
     background: linear-gradient(180deg, var(--color-600) 0%, var(--color-700) 100%);
 }
 
-/* ==================== AVATARES ==================== */
+/* Avatares */
+
 .avatar {
     background: linear-gradient(135deg, var(--color-500) 0%, var(--color-700) 100%);
     border: 2px solid var(--color-600);
@@ -199,7 +205,8 @@ a:hover {
     transform: scale(1.05);
 }
 
-/* ==================== MODALES ==================== */
+/* Modales */
+
 .modal-overlay {
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(8px);
@@ -211,19 +218,22 @@ a:hover {
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
 }
 
-/* ==================== NOTIFICACIONES ==================== */
+/* Notificaciones */
+
 .notification {
     background: #1f2937;
     border-left: 4px solid var(--color-500);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* ==================== TOGGLE SWITCH ==================== */
+/* Checkbox */
+
 input[type="checkbox"]:checked + div {
     background: linear-gradient(135deg, var(--color-500) 0%, var(--color-600) 100%);
 }
 
-/* ==================== ANIMACIONES ==================== */
+/* Animaciones */
+
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -267,7 +277,7 @@ input[type="checkbox"]:checked + div {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* ==================== EFECTOS DE HOVER ==================== */
+/* Hover */
 .hover-scale {
     transition: transform 0.3s ease;
 }
@@ -280,7 +290,8 @@ input[type="checkbox"]:checked + div {
     box-shadow: 0 0 20px rgba(232, 77, 191, 0.5);
 }
 
-/* ==================== RESPONSIVE ==================== */
+/* Responsive */
+
 @media (max-width: 768px) {
     .Navbar {
         padding: 0 1rem;
@@ -296,7 +307,8 @@ input[type="checkbox"]:checked + div {
     }
 }
 
-/* ==================== ESTADOS DE CARGA ==================== */
+/* Estado de carga */
+
 .loading {
     position: relative;
     overflow: hidden;
@@ -322,14 +334,16 @@ input[type="checkbox"]:checked + div {
     100% { left: 100%; }
 }
 
-/* ==================== CLASES UTILITARIAS ==================== */
+/* Clases utilitarias */
+
 .text-primary { color: var(--color-500) !important; }
 .text-secondary { color: var(--color-400) !important; }
 .bg-primary { background: var(--color-500) !important; }
 .bg-secondary { background: var(--color-600) !important; }
 .border-primary { border-color: var(--color-500) !important; }
 
-/* ==================== SOMBRAS PERSONALIZADAS ==================== */
+/* Sombra */
+
 .shadow-pink {
     box-shadow: 0 10px 30px rgba(232, 77, 191, 0.3);
 }
@@ -338,7 +352,8 @@ input[type="checkbox"]:checked + div {
     box-shadow: 0 20px 50px rgba(232, 77, 191, 0.4);
 }
 
-/* ==================== EFECTOS DE TEXTO ==================== */
+/* Texto gradiente */
+
 .text-gradient {
     background: linear-gradient(135deg, var(--color-300) 0%, var(--color-500) 50%, var(--color-700) 100%);
     -webkit-background-clip: text;
@@ -346,7 +361,8 @@ input[type="checkbox"]:checked + div {
     background-clip: text;
 }
 
-/* ==================== DIVISORES ==================== */
+/* Divisor */
+
 .divider {
     height: 1px;
     background: linear-gradient(90deg, 
@@ -356,12 +372,13 @@ input[type="checkbox"]:checked + div {
     );
 }
 
-/* ==================== CONTENEDOR DE PUBLICACIONES ==================== */
+/* Posts */
+
 .posts-container {
     background: transparent;
 }
 
-/* ==================== SIDEBAR OSCURO ==================== */
+/* Sliderbar (OSCURO) */
 aside {
     background: transparent;
 }
@@ -371,7 +388,8 @@ aside > div {
     border: 1px solid #374151;
 }
 
-/* ==================== INPUT DE CREAR PUBLICACIÓN (OSCURO) ==================== */
+/* Input para nuevas publicaciones */
+
 #postInput {
     background: #1f2937;
     border: 1px solid #374151;
@@ -382,7 +400,8 @@ aside > div {
     box-shadow: 0 0 0 3px rgba(232, 77, 191, 0.1);
 }
 
-/* ==================== HEADER DEL MODAL DE PERFIL (CON GRADIENTE ROSADO) ==================== */
+/* Modal */
+
 .modal-header-gradient {
     background: linear-gradient(135deg, var(--color-600) 0%, var(--color-700) 100%);
 }

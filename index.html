@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <!-- Barra de Navegación Superior -->
     <nav class="Navbar bg-gray-900 shadow-lg fixed top-0 left-0 right-0 z-50">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex items-center justify-between h-16">
@@ -19,8 +18,9 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <input type="text" placeholder="Buscar..." class="px-4 py-2 bg-gray-800 text-white rounded-full w-64 focus:outline-none focus:ring-2 focus:ring-[#E84DBF]">
-                    
-                    <!-- Botones para usuarios NO logueados -->
+                    <button onclick="toggleNotificationsPanel()" class="text-gray-400 hover:text-white transition">
+                        <i class="fas fa-bell text-xl"></i>
+                    </button>
                     <div id="guestButtons" class="flex items-center gap-3">
                         <a href="/pages/login.html" class="px-6 py-2 bg-transparent border-2 border-[#E84DBF] text-[#E84DBF] font-semibold rounded-full hover:bg-[#E84DBF] hover:text-white transition">
                             Iniciar Sesión
@@ -29,8 +29,6 @@
                             Registrarse
                         </a>
                     </div>
-
-                    <!-- Menú de usuario -->
                     <div id="userButtons" class="hidden relative">
                         <button onclick="toggleUserMenu()" class="flex items-center gap-2 relative">
                             <i class="fas fa-ellipsis-v text-gray-400 text-xl hover:text-white transition"></i>
@@ -38,8 +36,6 @@
                                 ?
                             </div>
                         </button>
-
-                        <!-- Dropdown Menu -->
                         <div id="userMenu" class="hidden absolute right-0 top-full mt-2 w-48 bg-gray-800 rounded-xl shadow-2xl border border-gray-700 overflow-hidden z-50">
                             <button onclick="openProfileModal()" class="w-full px-4 py-3 text-left text-white hover:bg-gray-700 transition flex items-center gap-3">
                                 <i class="fas fa-user-circle text-[#E84DBF]"></i>
@@ -56,8 +52,6 @@
             </div>
         </div>
     </nav>
-
-    <!-- Modal de Perfil -->
     <div id="profileModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
         <div class="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md relative animate-fadeIn border border-gray-800">
             <div class="bg-gradient-to-r from-[#CC2D9E] to-[#A6217D] rounded-t-2xl p-4 relative">
@@ -133,8 +127,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal de Crear Publicación -->
     <div id="createPostModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
         <div class="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg relative animate-fadeIn border border-gray-800">
             <div class="bg-gradient-to-r from-[#CC2D9E] to-[#A6217D] rounded-t-2xl p-4 relative">
@@ -143,7 +135,6 @@
                 </button>
                 <h2 class="text-xl font-bold text-white">¿Qué quieres publicar?</h2>
             </div>
-
             <div class="p-6">
                 <textarea 
                     id="newPostContent" 
@@ -171,8 +162,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal de Editar Publicación -->
     <div id="editPostModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
         <div class="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg relative animate-fadeIn border border-gray-800">
             <div class="bg-gradient-to-r from-[#CC2D9E] to-[#A6217D] rounded-t-2xl p-4 relative">
@@ -181,7 +170,6 @@
                 </button>
                 <h2 class="text-xl font-bold text-white">Editar publicación</h2>
             </div>
-
             <div class="p-6">
                 <textarea 
                     id="editPostContent" 
@@ -208,8 +196,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal de Crear Sala -->
     <div id="createRoomModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
         <div class="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg relative animate-fadeIn border border-gray-800">
             <div class="bg-gradient-to-r from-[#CC2D9E] to-[#A6217D] rounded-t-2xl p-4 relative">
@@ -300,8 +286,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal de Confirmación -->
     <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center p-4">
         <div class="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-sm relative animate-fadeIn border border-gray-800">
             <div class="p-6">
@@ -332,18 +316,14 @@
             </div>
         </div>
     </div>
-
-    <!-- Toast Notification -->
     <div id="toast" class="hidden fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-4 rounded-xl shadow-2xl border border-gray-700 z-[110] animate-slideUp">
         <div class="flex items-center gap-3">
             <i id="toastIcon" class="fas fa-check-circle text-green-400 text-xl"></i>
             <p id="toastMessage" class="font-semibold"></p>
         </div>
     </div>
-
     <div class="max-w-7xl mx-auto px-4 pt-20 pb-8">
         <div class="flex gap-6">
-            <!-- Sidebar de Salas -->
             <aside class="w-80 flex-shrink-0">
                 <div class="bg-gray-900 rounded-2xl shadow-xl p-5 sticky top-24">
                     <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
@@ -359,10 +339,7 @@
                     </button>
                 </div>
             </aside>
-
-            <!-- Feed Central -->
             <main class="flex-1">
-                <!-- Crear Publicación -->
                 <div class="bg-gray-900 rounded-2xl shadow-xl p-5 mb-6">
                     <div class="flex gap-3">
                         <div id="userAvatarPost" class="w-12 h-12 bg-gradient-to-br from-[#F47ED5] to-[#CC2D9E] rounded-full flex items-center justify-center text-white font-bold">
@@ -371,15 +348,12 @@
                         <input type="text" id="postInput" placeholder="¿Qué estás pensando?" class="flex-1 px-4 py-3 bg-gray-800 text-white rounded-full focus:outline-none focus:ring-2 focus:ring-[#E84DBF] cursor-pointer" onclick="handleCreatePost()" readonly>
                     </div>
                 </div>
-
-                <!-- Publicaciones -->
                 <div id="postsContainer" class="space-y-4">
                     <p class="text-gray-400 text-center py-8">Cargando publicaciones...</p>
                 </div>
             </main>
         </div>
     </div>
-
     <script>
         const API_URL = 'http://localhost:8000';
         let currentUser = null;
