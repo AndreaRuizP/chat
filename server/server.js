@@ -8,7 +8,6 @@ wss.on("connection", (ws) => {
     console.log("Cliente conectado");
 
     ws.on("message", (data) => {
-        // Reenviar mensaje a todos los clientes
         wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
                 client.send(data.toString());

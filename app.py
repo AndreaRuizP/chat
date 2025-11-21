@@ -3,7 +3,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
-# Ruta del archivo SQLite dentro de /server
 DB_PATH = os.path.join("server", "chat.db")
 
 app = FastAPI()
@@ -16,7 +15,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Inicializar la DB
 def init_db():
     os.makedirs("server", exist_ok=True)
 

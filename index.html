@@ -1,84 +1,132 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Chat en Tiempo Real</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat Juvenil</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: #f5f7fa;
+    }
 
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: #4f46e5;
+      color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
 
-    <!-- WebSocket (Node.js server) -->
-    <script>
-        let ws = new WebSocket("ws://localhost:3000");
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-        ws.onmessage = (event) => {
-            let data = JSON.parse(event.data);
-            addMessageToChat(data.username, data.message);
-        };
+    .nav-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+    }
 
-        function addMessageToChat(username, message) {
-            const chat = document.getElementById("chat");
-            const msg = document.createElement("div");
+    .nav-buttons button {
+      background: white;
+      color: #4f46e5;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-left: 10px;
+      font-weight: 600;
+    }
 
-            msg.className = "p-2 bg-blue-100 rounded mb-2";
-            msg.textContent = username + ": " + message;
+    .nav-profile {
+      width: 35px;
+      height: 35px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+    }
 
-            chat.appendChild(msg);
-            chat.scrollTop = chat.scrollHeight;
-        }
+    /* LAYOUT */
+    .container {
+      display: flex;
+      height: calc(100vh - 70px);
+    }
 
-        async function sendMessage() {
-            const username = document.getElementById("username").value;
-            const message = document.getElementById("message").value;
+    /* LISTA DE CHATS */
+    .chat-list {
+      width: 300px;
+      background: white;
+      border-right: 1px solid #ddd;
+      overflow-y: auto;
+    }
 
-            if (!username || !message) return;
+    .chat-item {
+      padding: 16px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-            ws.send(JSON.stringify({ username, message }));
+    .chat-item:hover {
+      background: #eef2ff;
+    }
 
-            // Guardar mensaje en FastAPI
-            await fetch("http://127.0.0.1:8000/messages?username=" +
-                username + "&message=" + message, {
-                method: "POST"
-            });
+    .chat-title {
+      font-weight: 600;
+      font-size: 16px;
+      color: #333;
+    }
 
-            document.getElementById("message").value = "";
-        }
-
-        // Cargar historial al iniciar
-        window.onload = async () => {
-            let res = await fetch("http://127.0.0.1:8000/messages");
-            let messages = await res.json();
-
-            messages.forEach(m => {
-                addMessageToChat(m.username, m.message);
-            });
-        };
-    </script>
+    /* AREA CENTRAL */
+    .chat-main {
+      flex: 1;
+      background: url('https://i.imgur.com/Z6a8i7B.png');
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+      font-size: 20px;
+      font-weight: 600;
+    }
+  </style>
 </head>
-
-<body class="bg-gray-100 p-6">
-
-<div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
-    <h1 class="text-2xl font-bold mb-4 text-center">Chat Web</h1>
-
-    <div class="mb-4">
-        <input id="username" type="text" placeholder="Tu nombre"
-               class="w-full p-2 border rounded">
+<body>
+  <div class="navbar">
+    <div class="nav-left">
+      <div class="nav-logo"></div>
+      <h2>MiChat</h2>
     </div>
 
-    <div id="chat"
-         class="h-64 overflow-y-auto border p-2 mb-4 bg-gray-50 rounded"></div>
-
-    <div class="flex gap-2">
-        <input id="message" type="text" placeholder="Mensaje"
-               class="flex-1 p-2 border rounded">
-
-        <button onclick="sendMessage()"
-                class="bg-blue-600 text-white px-4 rounded">
-            Enviar
-        </button>
+    <div class="nav-buttons">
+      <button>Iniciar sesión</button>
+      <button>Registrarse</button>
     </div>
-</div>
 
+    <div class="nav-profile"></div>
+  </div>
+
+  <div class="container">
+    <div class="chat-list">
+      <div class="chat-item"><div class="chat-title">Chat General</div></div>
+      <div class="chat-item"><div class="chat-title">Memes & Risas</div></div>
+      <div class="chat-item"><div class="chat-title">Programación</div></div>
+      <div class="chat-item"><div class="chat-title">Gamer Zone</div></div>
+      <div class="chat-item"><div class="chat-title">Universidad</div></div>
+    </div>
+
+    <div class="chat-main">
+      Selecciona un chat para comenzar
+    </div>
+  </div>
 </body>
 </html>
